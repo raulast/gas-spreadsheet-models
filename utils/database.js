@@ -132,26 +132,5 @@ function deleteRow(tableName,id){
   sheet.deleteRow(row);
   return true;
 }
-function test(){
-  // models()
-  Logger.log(posts.addRow({user_id:1,title:"titulo_1",content:"content_1"}));
-  Logger.log(posts.addRow({user_id:1,title:"titulo_1.1",content:"content_1.1"}));
-  Logger.log(posts.addRow({user_id:2,title:"titulo_2",content:"content_3"}));
-  Logger.log(posts.addRow({user_id:3,title:"titulo_3",content:"content_3"}));
-  posts.deleteRow(3)
-  // Logger.log(deleteRow('users',11))
-  // Logger.log(updateRow('users',11))
-  // return(updateRow('users',11,{
-  //   name:"test11",	
-  //   // email:"test9@mail.com",	
-  //   // password:"123456",	
-  //   roles:"pro",	
-  //   //created_at:"1706642274",	
-  //   //updated_at:"1706642274",
-  //   //adicional1:"afasdfas",
-  //   //adicional2:"aasdfasf"
-  // }));
-  // Logger.log(addRow('users',{}));
-}
 
 
