@@ -45,17 +45,17 @@ function selectColumns(table,columns) {
   const mod = models()[table]
   return mod.columns.filter(h=>!h.hidden).filter(c=>columns.includes(c.column_name)).map((obj)=>(obj.column_tag))  
 }
-function find(tableName,id, deleted=false){
-  const select = selectAll(tableName).join(',')
+function find(tableName,id, deleted=false,sel=""){
+  const select = sel || selectAll(tableName).join(',')
   const sp = getSpSh(tableName);
   const sheet = sp.getSheetByName(tableName);
   const range = sheet.getDataRange().getA1Notation();
   var req = query(tableName,`=QUERY('${tableName}'!${range},"SELECT ${select} WHERE A=${id} ${deleted?"":`${headers(tableName).includes("deleted_at")?`and ${selectColumns(tableName,['deleted_at']).join('')} is null`:""}`}",1)`);
   return req[0]||null;
 }
-function getPage(tableName,q,page,perpage,deleted=false,qq="1=1"){
+function getPage(tableName,q,page,perpage,deleted=false,qq="1=1",s=""){
   const sel = selectAll(tableName);
-  const select = sel.join(',');
+  const select = s || sel.join(',');
   const sp = getSpSh(tableName);
   const sheet = sp.getSheetByName(tableName);
   const range = sheet.getDataRange().getA1Notation();
