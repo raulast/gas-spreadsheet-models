@@ -79,11 +79,13 @@ function parseJwt(jsonWebToken, privateKey){
     const blob = Utilities.newBlob(Utilities.base64Decode(payload)).getDataAsString();
     const { exp, ...data } = JSON.parse(blob);
     if (new Date(exp * 1000) < new Date()) {
-      throw new Error('The token has expired');
+      return {status:false,message:"The token has expired",result:null}
+      // throw new Error('The token has expired');
     }
-    return (data);
+    return ({...data,status:true});
   } else {
-    throw new Error('🔴 Invalid Signature');
+    return {status:false,message:"🔴 Invalid Signature",result:null}
+    // throw new Error('🔴 Invalid Signature');
   }
 }
 function login(email,password,hours=24,data={}){

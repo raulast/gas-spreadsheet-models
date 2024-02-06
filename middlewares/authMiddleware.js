@@ -1,5 +1,10 @@
-function authMiddleware(e={}){
-  return null
+function isLoggedIn(e={}){
+  const error = {status:false,message:"Must be logged in",result:null}
+  if(!e.parameter.token) return error;
+  const jwt = e.parameter.token;
+  const response = checkJwt(jwt);
+  if(!response.payload.status) return error;
+  return null;
 }
 
 function checkRegister(email){

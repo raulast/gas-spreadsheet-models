@@ -1,5 +1,5 @@
 function middelwares(){
   return{
-    authMiddleware:(e)=>(authMiddleware(e))
+    isLoggedIn:(e)=>(isLoggedIn(e))
   }
 }
