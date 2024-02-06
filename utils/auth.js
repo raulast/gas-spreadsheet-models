@@ -86,3 +86,43 @@ function parseJwt(jsonWebToken, privateKey){
     throw new Error('🔴 Invalid Signature');
   }
 }
+function login(email,password,hours=24,data={}){
+  const _email = users.columns.find(o=>o.column_name==="email").column_tag;
+  const _password= users.columns.find(o=>o.column_name==="password").column_tag;
+  const _id= users.columns.find(o=>o.column_name==="id").column_tag;
+  const user= users.getAll(false,`${_id},${_email},${_password}`,`${_email}='${email}'`)[0] || null;
+  if(!user)return false;
+  if(!check(user.password,password))return false;
+  const privateKey = getPrivateKey(user.password);
+  const jwt = createJwt(privateKey,hours,{...data,user_id:user.id});
+  users.updateRow(user.id,{jwt});
+  return {
+    user:users.find(user.id),
+    token: jwt
+  }
+}
+function registerUser(user_data={}){
+  const cr = checkRegister(user_data.email);
+  if(cr)return cr;
+  const rr = users.checkRequired(user_data)
+  if(!(rr === true)) return rr;
+  users.addRow({...user_data, password:hash(user_data.password)});
+  return login(user_data.email,user_data.password)
+}
+function checkJwt(jwt){
+  const payload = payloadJwt(jwt);
+  const _email = users.columns.find(o=>o.column_name==="email").column_tag;
+  const _password= users.columns.find(o=>o.column_name==="password").column_tag;
+  const _id= users.columns.find(o=>o.column_name==="id").column_tag;
+  const user = users.find(payload.user_id,false,`${_id},${_email},${_password}`);
+  if(!user)return false;
+  const privateKey = getPrivateKey(user.password)
+  const pjwt = parseJwt(jwt,privateKey);
+  return{
+    payload: pjwt,
+    user: users.find(user.id)
+  }
+}
+function testRegister(){
+  console.log(checkJwt('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDcyNzMzMDAsImlhdCI6MTcwNzE4NjkwMCwidXNlcl9pZCI6Mn0.HwU38ObgzermWrpaqGyBc1BIlnGoVzq50qACJ9bC1Yc'))
+}

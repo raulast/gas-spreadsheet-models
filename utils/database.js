@@ -132,5 +132,14 @@ function deleteRow(tableName,id){
   sheet.deleteRow(row);
   return true;
 }
-
+function checkRequired(tableName,data={},req=[]){
+  let pass = true;
+  const required = req.length >0? req: models()[tableName].columns.filter(c=>c.required).map(c=>c.column_name);
+  let response = null;
+  required.forEach(r=>{
+    if(pass) pass = pass && Boolean(data[r]);
+    if(!pass && !response) response = r;
+  })
+  return pass || `${response} is required`
+}
 
